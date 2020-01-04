@@ -12,12 +12,14 @@ double pop(void);
 double get_last(void);
 void print(void);
 void duplicate(void);
+void clear(void);
 int count(void);
 int is_word(char []);
 
 // commands
 const char PRINT = 'p';
 const char DUPLICATE = 'd';
+const char CLEAR = 'c';
 
 // special operations
 const int SIN = 256;
@@ -83,6 +85,11 @@ int main()
             case DUPLICATE:
                 is_command = 1;
                 duplicate();
+                break;
+            case CLEAR:
+                is_command = 1;
+                clear();
+                printf("stack cleared\n");
                 break;
             case '\n':
                 if (!is_command && count() > 0)
