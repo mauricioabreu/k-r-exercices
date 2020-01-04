@@ -21,6 +21,8 @@ const char DUPLICATE = 'd';
 
 // special operations
 const int SIN = 256;
+const int EXP = 257;
+const int POW = 258;
 
 char specials[3];
 
@@ -66,6 +68,13 @@ int main()
                 break;
             case SIN:
                 push(sin(pop()));
+                break;
+            case EXP:
+                push(exp(pop()));
+                break;
+            case POW:
+                op2 = pop();
+                push(pow(pop(), op2));
                 break;
             case PRINT:
                 is_command = 1;
@@ -166,6 +175,10 @@ int getop(char s[])
         if (is_word(specials))
             if (specials[0] == 's' && specials[1] == 'i' && specials[2] == 'n')
                 return SIN;
+            if (specials[0] == 'e' && specials[1] == 'x' && specials[2] == 'p')
+                return EXP;
+            if (specials[0] == 'p' && specials[1] == 'o' && specials[2] == 'w')
+                return POW;
 
         ungetch(specials[1]);
         ungetch(specials[2]);
