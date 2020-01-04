@@ -175,7 +175,7 @@ int getop(char s[])
                 return EXP;
             if (strcmp(s, "pow") == 0)
                 return POW;
-        } else {    // handle vars
+        } else {    // handle vars and functions
             getch();
             return s[0];
         }
