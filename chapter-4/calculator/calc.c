@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #define MAXOP 100 // max size of operand or operator
 #define NUMBER '0' // signal that a number was found
@@ -12,9 +13,16 @@ double get_last(void);
 void print(void);
 void duplicate(void);
 int count(void);
+int is_word(char []);
 
+// commands
 const char PRINT = 'p';
 const char DUPLICATE = 'd';
+
+// special operations
+const int SIN = 256;
+
+char specials[3];
 
 /* reverse polish calculator */
 int main()
@@ -55,6 +63,9 @@ int main()
                 is_command = 0;
                 op2 = pop();
                 push(fmod(pop(), op2));
+                break;
+            case SIN:
+                push(sin(pop()));
                 break;
             case PRINT:
                 is_command = 1;
@@ -132,8 +143,34 @@ int getop(char s[])
     while ((s[0] = c = getch()) == ' ' || c == '\t')
         ;
     s[1] = '\0';
-    if (!isdigit(c) && c != '.' && c != '-')
+    if (!isdigit(c) && c != '.' && c != '-') {
+        specials[0] = c;
+        if (specials[0] == '\n') {
+            return c;
+        }
+
+        specials[1] = getch();
+        if (specials[1] == '\n') {
+            ungetch(specials[1]);
+            return specials[0];
+        }
+
+        specials[2] = getch();
+        if (specials[2] == '\n') {
+            ungetch(specials[1]);
+            ungetch(specials[2]);
+            return specials[0];
+        }
+
+        // a word may be a special expression like sin
+        if (is_word(specials))
+            if (specials[0] == 's' && specials[1] == 'i' && specials[2] == 'n')
+                return SIN;
+
+        ungetch(specials[1]);
+        ungetch(specials[2]);
         return c; // not a number
+    }
 
     i = 0;
 
@@ -160,13 +197,13 @@ int getop(char s[])
     return NUMBER;
 }
 
-/* print last element of stack */
+/* print: print last element of stack */
 void print(void)
 {
     printf("print top element %g\n", get_last());
 }
 
-/* duplicate the last element of stack */
+/* duplicate: duplicate the last element of stack */
 void duplicate(void)
 {
     if (sp > 0) 
@@ -175,7 +212,7 @@ void duplicate(void)
         printf("error: stack empty\n");
 }
 
-/* return last element of stack */
+/* get_last: return last element of stack */
 double get_last(void)
 {
     if (count() > 0)
@@ -186,14 +223,24 @@ double get_last(void)
     }
 }
 
-/* count how many items in the stack */
+/* count: count how many items in the stack */
 int count(void)
 {
     return sp;
 }
 
-/* clear the stack */
+/* clear: clear the stack */
 void clear(void)
 {
     sp = 0;
+}
+
+/* is_word: if all chars are alpha */
+int is_word(char letters[])
+{
+    for (int i = 0; letters[i] != '\0'; i++) {
+        if (!isalpha(letters[i]))
+            return 0;
+    }
+    return 1;
 }
