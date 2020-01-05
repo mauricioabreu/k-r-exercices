@@ -5,6 +5,7 @@
 
 #define MAXOP 100 // max size of operand or operator
 #define NUMBER '0' // signal that a number was found
+#define VAR 'v' // signal a var was found
 #define MAXVARS 26 // max number of variables (alphabet)
 
 int getop(char []);
@@ -19,9 +20,9 @@ void set(unsigned char, double);
 double get(unsigned char);
 
 // commands
-const char PRINT = 'p';
-const char DUPLICATE = 'd';
-const char CLEAR = 'c';
+const char PRINT = 'P';
+const char DUPLICATE = 'D';
+const char CLEAR = 'C';
 
 // special operations
 const int SIN = 256;
@@ -46,6 +47,8 @@ int main()
             case NUMBER:
                 push(atof(s));
                 break;
+            case VAR:
+                continue;
             case '+':
                 push(pop() + pop());
                 break;
@@ -89,6 +92,9 @@ int main()
                 break;
             case SET:
                 set(s[0], get_last());
+                break;
+            case GET:
+                get(s[0]);
                 break;
             case '\n':
                 if (count() > 0)
@@ -164,7 +170,8 @@ int getop(char s[])
         return c;
 
     if (isalpha(c)) {
-        while (isalpha(s[++i] = c = getch()));
+        while (isalpha(s[++i] = c = getch()))
+            ;
         ungetch(c);
         s[i] = '\0';
 
@@ -175,7 +182,14 @@ int getop(char s[])
                 return EXP;
             if (strcmp(s, "pow") == 0)
                 return POW;
+        }
+        if (i == 1 && islower(s[0])) {
+            return VAR;
         } else {    // handle vars and functions
+            if (strcmp(s, "SET") == 0)
+                return SET; 
+            if (strcmp(s, "GET") == 0)
+                return GET;
             getch();
             return s[0];
         }
