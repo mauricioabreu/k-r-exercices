@@ -15,6 +15,7 @@ double get_last(void);
 void print(void);
 void duplicate(void);
 void clear(void);
+void swap(void);
 int count(void);
 void set(unsigned char, double);
 double get(unsigned char);
@@ -23,6 +24,7 @@ double get(unsigned char);
 const char PRINT = 'P';
 const char DUPLICATE = 'D';
 const char CLEAR = 'C';
+const char SWAP = 'S';
 
 // special operations
 const int SIN = 256;
@@ -89,6 +91,10 @@ int main()
             case CLEAR:
                 clear();
                 printf("stack cleared\n");
+                break;
+            case SWAP:
+                swap();
+                printf("elements swapped\n");
                 break;
             case SET:
                 set(s[0], get_last());
@@ -258,4 +264,19 @@ void set(unsigned char var, double n)
 double get(unsigned char var)
 {
     return vars[var];
+}
+
+/* swap: swap top elements fromm stack */
+void swap(void)
+{
+    double last, second_last;
+
+    if (count() > 1) {
+        last = pop();
+        second_last = pop();
+        push(last); // push this first so it is located before
+        push(second_last);
+    } else {
+        printf("error: need two elements to swap\n");
+    }
 }
