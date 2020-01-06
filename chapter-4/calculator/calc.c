@@ -193,12 +193,14 @@ int getop(char s[])
             getch();
             return s[0];
         }
-    } else if (isdigit(c)) {
+    } else if (isdigit(c) || c == '-') {
         while (isdigit(s[++i] = c = getch()))
             ;
         if (c == '.') // collect fraction part
             while (isdigit(s[++i] = c = getch()))
                 ;
+        if (c == '-')
+            s[++i] = c = getch();
 
         ungetch(c);
         s[i] = '\0';
